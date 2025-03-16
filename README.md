@@ -23,5 +23,3 @@ You can access the hosted website here: [Swift Shop](https://swift-shop.tech)
 ## Contributing
 Contributions are welcome! Please fork the repository and submit a pull request.
 
-## License
-This project is licensed under the MIT License.
