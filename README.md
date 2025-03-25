@@ -1,7 +1,7 @@
 # Swift Shop eCommerce Application MVP
 
 ## Overview
-Swift Shop is a minimal viable product (MVP) for an eCommerce application built using Swift. This application allows users to browse products, add them to their cart, and proceed to checkout.
+Swift Shop is a minimal viable product (MVP) for an eCommerce application built using MERN. This application allows users to browse products, add them to their cart, and proceed to checkout.
 
 ## Features
 - User authentication and authorization
