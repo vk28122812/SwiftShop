@@ -16,7 +16,7 @@ import Failed from "./components/Failed.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 function App() {
 
-  console.log("environment variables: ", import.meta.env);
+  // console.log("environment variables: ", import.meta.env);
   
   return (
     <Router>

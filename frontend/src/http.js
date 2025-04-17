@@ -1,6 +1,4 @@
-// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-
-const BACKEND_URL = "https://backend-swift-80cc4f0f04c5.herokuapp.com";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
 export async function validateLogin({email,password}) {
     try{
