@@ -2,7 +2,7 @@ const router = require("express").Router();
 const User = require("../../models/user");
 
 router.post("/", async(req,res)=>{
-    console.log(req.body);
+    // console.log(req.body);
     const { email,password,name } = req.body;
     try{
         const existingUser = await User.findOne({email});

@@ -10,7 +10,6 @@ export default function Product({
   description
 }){
   const source = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api'}${image}`;
-
   const dispatch = useDispatch();
   function handleClick(){
     toast(`${title} added to cart!`);
