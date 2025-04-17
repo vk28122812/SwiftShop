@@ -25,7 +25,8 @@ jobs:
       - name: 🔄 Fetch Heroku Config Variables
         id: heroku-config
         run: |
-          heroku config --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }} > heroku_env.txt
+          # Fetch Heroku config and remove the header line
+          heroku config --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }} | tail -n +2 > heroku_env.txt
           # Debugging: Show only variable names, not values
           cut -d= -f1 heroku_env.txt
         env:
