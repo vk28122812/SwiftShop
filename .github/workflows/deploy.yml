@@ -22,32 +22,6 @@ jobs:
           echo "${{ secrets.HEROKU_API_KEY }}" \
             | docker login --username=_ --password-stdin registry.heroku.com
 
-      - name: 🔄 Fetch Heroku Config Variables
-        id: heroku-config
-        run: |
-          # Fetch Heroku config and remove the header line
-          heroku config --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }} | tail -n +2 > heroku_env.txt
-          # Debugging: Show only variable names, not values
-          cut -d= -f1 heroku_env.txt
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-
-      # --- FRONTEND ---
-      - name: 🛠️ Build & push frontend image
-        run: |
-          # Safely export environment variables
-          set -a
-          source heroku_env.txt
-          set +a
-          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web ./frontend
-          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web
-
-      - name: 🚀 Release frontend
-        run: |
-          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }}
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-
       # --- BACKEND ---
       - name: 🛠️ Build & push backend image
         run: |
@@ -57,5 +31,25 @@ jobs:
       - name: 🚀 Release backend
         run: |
           heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_BACKEND }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      # --- FRONTEND ---
+      - name: 🛠️ Build frontend
+        run: |
+          npm install
+          VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }} \
+          VITE_STRIPE=${{ secrets.VITE_STRIPE }} \
+          npm run build
+        working-directory: ./frontend
+
+      - name: 🛠️ Build & push frontend image
+        run: |
+          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web ./frontend
+          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web
+
+      - name: 🚀 Release frontend
+        run: |
+          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }}
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
