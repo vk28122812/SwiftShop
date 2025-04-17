@@ -20,9 +20,7 @@ jobs:
 
       - name: Create backend/.env
         run: |
-          cat <<EOF > backend/.env
-${{ secrets.BACKEND_ENV }}
-EOF
+          printf "%s" "${{ secrets.BACKEND_ENV }}" > backend/.env
 
       - name: Build & push backend image
         run: |
@@ -37,9 +35,7 @@ EOF
 
       - name: Create frontend/.env
         run: |
-          cat <<EOF > frontend/.env
-${{ secrets.FRONTEND_ENV }}
-EOF
+          printf "%s" "${{ secrets.FRONTEND_ENV }}" > frontend/.env
 
       - name: Build & push frontend image
         run: |
@@ -54,5 +50,5 @@ EOF
 
       - name: Cleanup .env files
         run: |
-          rm backend/.env
-          rm frontend/.env
+          rm -f backend/.env || true
+          rm -f frontend/.env || true
