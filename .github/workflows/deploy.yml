@@ -22,24 +22,10 @@ jobs:
           echo "${{ secrets.HEROKU_API_KEY }}" \
             | docker login --username=_ --password-stdin registry.heroku.com
 
-      # --- BACKEND ---
-      - name: 🛠️ Build & push backend image
-        run: |
-          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web ./backend
-          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web
-
-      - name: 🚀 Release backend
-        run: |
-          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_BACKEND }}
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-
       # --- FRONTEND ---
       - name: 🛠️ Build frontend
         run: |
           npm install
-          VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }} \
-          VITE_STRIPE=${{ secrets.VITE_STRIPE }} \
           npm run build
         working-directory: ./frontend
 
@@ -51,5 +37,17 @@ jobs:
       - name: 🚀 Release frontend
         run: |
           heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      # --- BACKEND ---
+      - name: 🛠️ Build & push backend image
+        run: |
+          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web ./backend
+          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web
+
+      - name: 🚀 Release backend
+        run: |
+          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_BACKEND }}
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
