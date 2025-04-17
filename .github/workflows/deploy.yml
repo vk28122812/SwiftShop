@@ -3,7 +3,7 @@ name: CI/CD – Docker → Heroku
 # Trigger on pushes to main (change branch if you like)
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   deploy:
