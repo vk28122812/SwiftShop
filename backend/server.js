@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const routes = require("./routes/routes");
 const path = require("path");
 require("dotenv").config();
-
+console.log(process.env);
 const app = express();
 app.use(express.json());
 app.use(cors());
