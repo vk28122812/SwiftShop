@@ -20,7 +20,7 @@ jobs:
 
       - name: Create backend/.env
         run: |
-          printf "%s" "${{ secrets.BACKEND_ENV }}" > backend/.env
+          echo "${{ secrets.BACKEND_ENV }}" > backend/.env
 
       - name: Build & push backend image
         run: |
@@ -35,7 +35,7 @@ jobs:
 
       - name: Create frontend/.env
         run: |
-          printf "%s" "${{ secrets.FRONTEND_ENV }}" > frontend/.env
+          echo "${{ secrets.FRONTEND_ENV }}" > frontend/.env
 
       - name: Build & push frontend image
         run: |
