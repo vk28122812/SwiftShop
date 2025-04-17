@@ -2,54 +2,57 @@ name: CI/CD – Docker → Heroku
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
 
-    - name: Login to Heroku Container Registry
-      run: echo "${{ secrets.HEROKU_API_KEY }}" \
-           | docker login --username=_ --password-stdin registry.heroku.com
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Backend
-    - name: Create backend/.env
-      run: |
-        cat <<EOF > backend/.env
+      - name: Login to Heroku Container Registry
+        run: |
+          echo "${{ secrets.HEROKU_API_KEY }}" \
+            | docker login --username=_ --password-stdin registry.heroku.com
+
+      - name: Create backend/.env
+        run: |
+          cat <<EOF > backend/.env
 ${{ secrets.BACKEND_ENV }}
 EOF
 
-    - name: Build & push backend
-      run: |
-        docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web ./backend
-        docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web
+      - name: Build & push backend image
+        run: |
+          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web ./backend
+          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web
 
-    - name: Release backend
-      run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_BACKEND }}
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      - name: Release backend
+        run: |
+          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_BACKEND }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-    # Frontend
-    - name: Create frontend/.env
-      run: |
-        cat <<EOF > frontend/.env
+      - name: Create frontend/.env
+        run: |
+          cat <<EOF > frontend/.env
 ${{ secrets.FRONTEND_ENV }}
 EOF
 
-    - name: Build & push frontend
-      run: |
-        docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web ./frontend
-        docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web
+      - name: Build & push frontend image
+        run: |
+          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web ./frontend
+          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web
 
-    - name: Release frontend
-      run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }}
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      - name: Release frontend
+        run: |
+          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-    - name: Cleanup
-      run: |
-        rm backend/.env
-        rm frontend/.env
+      - name: Cleanup .env files
+        run: |
+          rm backend/.env
+          rm frontend/.env
