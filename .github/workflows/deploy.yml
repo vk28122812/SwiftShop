@@ -1,59 +1,55 @@
 name: CI/CD – Docker → Heroku
 
-# Trigger on pushes to main (change branch if you like)
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout your repo
-      - name: 🛎️ Checkout code
-        uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-      # 2) Login to Heroku Container Registry
-      - name: 🚪 Login to Heroku Container Registry
-        run: echo "${{ secrets.HEROKU_API_KEY }}" | docker login --username=_ --password-stdin registry.heroku.com
+    - name: Login to Heroku Container Registry
+      run: echo "${{ secrets.HEROKU_API_KEY }}" \
+           | docker login --username=_ --password-stdin registry.heroku.com
 
-      # --- BACKEND ---
-      # 3) Create backend/.env from BACKEND_ENV secret
-      - name: 🗄️ Create backend/.env
-        run: echo "${{ secrets.BACKEND_ENV }}" > backend/.env
+    # Backend
+    - name: Create backend/.env
+      run: |
+        cat <<EOF > backend/.env
+${{ secrets.BACKEND_ENV }}
+EOF
 
-      # 4) Build & push backend image
-      - name: 🐳 Build & Push backend
-        run: |
-          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web ./backend
-          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web
+    - name: Build & push backend
+      run: |
+        docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web ./backend
+        docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_BACKEND }}/web
 
-      # 5) Release backend on Heroku
-      - name: 🚀 Release backend
-        run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_BACKEND }}
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    - name: Release backend
+      run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_BACKEND }}
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-      # --- FRONTEND ---
-      # 6) Create frontend/.env from FRONTEND_ENV secret
-      - name: 🗄️ Create frontend/.env
-        run: echo "${{ secrets.FRONTEND_ENV }}" > frontend/.env
+    # Frontend
+    - name: Create frontend/.env
+      run: |
+        cat <<EOF > frontend/.env
+${{ secrets.FRONTEND_ENV }}
+EOF
 
-      # 7) Build & push frontend image
-      - name: 🐳 Build & Push frontend
-        run: |
-          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web ./frontend
-          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web
+    - name: Build & push frontend
+      run: |
+        docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web ./frontend
+        docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONTEND }}/web
 
-      # 8) Release frontend on Heroku
-      - name: 🚀 Release frontend
-        run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }}
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    - name: Release frontend
+      run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME_FRONTEND }}
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-      # 9) (Optional) Clean up temp .env files
-      - name: 🧹 Cleanup
-        run: |
-          rm backend/.env
-          rm frontend/.env
+    - name: Cleanup
+      run: |
+        rm backend/.env
+        rm frontend/.env
