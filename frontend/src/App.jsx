@@ -15,6 +15,9 @@ import Success from "./components/Success.jsx";
 import Failed from "./components/Failed.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 function App() {
+
+  console.log("environment variables: ", import.meta.env);
+  
   return (
     <Router>
       <Toaster position="top-center" reverseOrder={false} />
