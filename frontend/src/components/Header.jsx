@@ -58,7 +58,7 @@ export default function Header() {
           <img src="logo.png" alt="Elegant model" onClick={()=>navigate("/")}/>
           {/* <h1>SwiftShop</h1> */}
           <div id="greet">
-            <h1  onClick={()=>navigate("/")}>SwiftShop</h1>
+            <h1  onClick={()=>navigate("/")}>Swift Shop</h1>
             {isAuthenticated && <h4>{greeting}</h4>}
           </div>
         </div>
