@@ -10,7 +10,7 @@ Swift Shop is a minimal viable product (MVP) for an eCommerce application built 
 - Order processing and checkout
 
 ## Hosted Website
-You can access the hosted website here: [Swift Shop](https://swift-shop.tech)
+You can access the hosted website here: [Swift Shop](https://swift-shop-81f597653ab5.herokuapp.com/)
 
 
 
